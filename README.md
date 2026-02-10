@@ -1,7 +1,7 @@
 # P<sup>3</sup>T: Prototypical Point-level Prompt Tuning with Enhanced Generalization for 3D Vision-Language Models
 
 This repository provides the official implementation of "P<sup>3</sup>T: Prototypical Point-level Prompt Tuning with Enhanced Generalization for 3D Vision-Language Models" (ICRA 2026)
-> Geunyoung Jung, Soohong Kim, Kyungwoo Song, Jiyoung Jung
+> [Geunyoung Jung](https://gyjung975.github.io/), Soohong Kim, Kyungwoo Song, Jiyoung Jung
 
 Coming soon..
 
