@@ -1,0 +1,9 @@
+name: Point_BERT
+trans_dim: 384
+depth: 12
+drop_path_rate: 0.1
+cls_dim: 40
+num_heads: 6
+group_size: 32
+num_group: 64
+encoder_dims: 256

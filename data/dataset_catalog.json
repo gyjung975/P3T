@@ -1,0 +1,56 @@
+{
+    "shapenet": {
+        "config": "data/ShapeNet-55.yaml",
+        "train": "train",
+        "test": "test",
+        "usage": "train"
+    },
+    "modelnet40": {
+        "config": "data/ModelNet40.yaml",
+        "train": "train",
+        "test": "test",
+        "usage": "test"
+    },
+    "scanobjectnn": {
+        "config": "data/ScanObjectNN.yaml",
+        "train": "train",
+        "test": "test",
+        "usage": "test"
+    },
+    "objaverse_lvis_colored": {
+        "config": "data/Objaverse_Lvis_Colored.yaml",
+        "train": "train",
+        "test": "test",
+        "usage": "train"
+    },
+    "shapenetpart": {
+        "config": "data/ShapeNetPart.yaml",
+        "train": "train",
+        "test": "test",
+        "usage": "test"
+    },
+    "modelnet40_fs": {
+        "config": "data/ModelNet40_fs.yaml",
+        "train": "train",
+        "test": "test",
+        "usage": "test"
+    },
+    "scanobjectnn_fs": {
+        "config": "data/ScanObjectNN_fs.yaml",
+        "train": "train",
+        "test": "test",
+        "usage": "test"
+    },
+    "modelnet10": {
+        "config": "data/ModelNet10.yaml",
+        "train": "train",
+        "test": "test",
+        "usage": "test"
+    },
+    "modelnet10_fs": {
+        "config": "data/ModelNet10_fs.yaml",
+        "train": "train",
+        "test": "test",
+        "usage": "test"
+    }
+}
