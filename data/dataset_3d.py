@@ -162,17 +162,17 @@ def translate_pointcloud(pointcloud):
 os.environ["HDF5_USE_FILE_LOCKING"] = "FALSE"
 
 
-def load_scanobjectnn_data(root, type, partition, num_point):
+def load_scanobjectnn_data(root, sonn_type, partition, num_point):
     all_data = []
     all_label = []
 
     if partition == 'train':
         partition = 'training'
-    if type == 'obj_only':
+    if sonn_type == 'obj_only':
         h5_name = f'data/ScanObjectNN/main_split_nobg/{partition}_objectdataset.h5'
-    elif type == 'obj_bg':
+    elif sonn_type == 'obj_bg':
         h5_name = f'data/ScanObjectNN/main_split/{partition}_objectdataset.h5'
-    elif type == 'hardest':
+    elif sonn_type == 'hardest':
         h5_name = f'data/ScanObjectNN/main_split/{partition}_objectdataset_augmentedrot_scale75.h5'
 
     if num_point == 1024:
@@ -238,69 +238,6 @@ def split_dataset_by_label(data_source):
     return output
 
 
-def subsample_classes(list_of_data, list_of_labels, subsample):
-    assert subsample in ["all", "base", "new"]
-
-    if subsample == "all":
-        return list_of_data, list_of_labels
-
-    labels = set()
-    for item in list_of_labels:
-        labels.add(item.item())
-    labels = list(labels)
-    labels.sort()
-
-    n = len(labels)
-    m = math.ceil(n / 2)
-
-    print(f"==> SUBSAMPLE {subsample.upper()} CLASSES!")
-    if subsample == "base":
-        selected = labels[:m]  # take the first half
-    else:
-        selected = labels[m:]  # take the second half
-    relabeler = {y: y_new for y_new, y in enumerate(selected)}
-
-    data_new, label_new = [], []
-    for (d, l) in zip(list_of_data, list_of_labels):
-        if l not in selected:
-            continue
-        data_new.append(d)
-        label_new.append(relabeler[l.item()])
-    data_new, label_new = np.stack(data_new), np.stack(label_new)
-    return data_new, label_new
-
-
-def subsample_classes_fs(datum, subsample):
-    assert subsample in ["all", "base", "new"]
-
-    if subsample == "all":
-        return datum
-
-    labels = set()
-    for item in datum:
-        labels.add(item['label'])
-    labels = list(labels)
-    labels.sort()
-
-    n = len(labels)
-    m = math.ceil(n / 2)
-
-    print(f"==> SUBSAMPLE {subsample.upper()} CLASSES!")
-    if subsample == "base":
-        selected = labels[:m]  # take the first half
-    else:
-        selected = labels[m:]  # take the second half
-    relabeler = {y: y_new for y_new, y in enumerate(selected)}
-
-    datum_new = []
-    for item in datum:
-        if item['label'] not in selected:
-            continue
-        item['label'] = relabeler[item['label']]
-        datum_new.append(item)
-    return datum_new
-
-
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(BASE_DIR)
 PROJ_DIR = os.path.dirname(BASE_DIR)
@@ -325,12 +262,6 @@ class ModelNet(data.Dataset):
 
         with open(self.save_path, 'rb') as f:
             self.list_of_points, self.list_of_labels = pickle.load(f)
-
-        self.subsample = config.subsample
-        if self.subsample != 'all':
-            print('\n============= Entering Base-to-Novel Generalization =============\n')
-            if self.subset != 'train': self.subsample = 'new'
-            self.list_of_points, self.list_of_labels = subsample_classes(self.list_of_points, self.list_of_labels, self.subsample)
 
     def __len__(self):
         return len(self.list_of_labels)
@@ -382,24 +313,16 @@ class ModelNet_fs(ModelNet):
             train = read_mn_so_data(self.cat, self.list_of_points, self.list_of_labels)
             few_path = os.path.join("data/fewshot", f"modelnet_{num_shots}s_seed{config.args.seed}.pkl")
             if os.path.exists(few_path):
-                print_log(f"Loading preprocessed few-shot data from {few_path}", logger='ModelNet')
+                print_log(f"Loading preprocessed few-shot data from {few_path}", logger='ModelNet40_fs')
                 with open(few_path, "rb") as file:
                     self.data_source = pickle.load(file)
             else:
-                print_log(f"Generating few-shot data to {few_path}", logger='ModelNet')
+                print_log(f"Generating few-shot data to {few_path}", logger='ModelNet40_fs')
                 self.data_source = generate_fewshot_dataset(train, num_shots=num_shots)
                 with open(few_path, "wb") as file:
                     pickle.dump(self.data_source, file)
         else:
             self.data_source = read_mn_so_data(self.cat, self.list_of_points, self.list_of_labels)
-
-        print('\n============= Entering ModelNet_fs =============\n')
-
-        self.subsample = config.subsample
-        if self.subsample != 'all':
-            print('\n============= Entering Base-to-Novel Generalization =============\n')
-            if self.subset != 'train': self.subsample = 'new'
-            self.data_source = subsample_classes_fs(self.data_source, self.subsample)
 
     def __len__(self):
         return len(self.data_source)
@@ -440,12 +363,6 @@ class ScanObjectNN(data.Dataset):
             lines = file.readlines()
             self.shape_names = [line.rstrip() for line in lines]
 
-        self.subsample = config.subsample
-        if self.subsample != 'all':
-            print('\n============= Entering Base-to-Novel Generalization =============\n')
-            if self.subset != 'train': self.subsample = 'new'
-            self.data, self.label = subsample_classes(self.data, self.label, self.subsample)
-
     def __getitem__(self, item):
         pointcloud = self.data[item]
         label = self.label[item]
@@ -484,22 +401,16 @@ class ScanObjectNN_fs(data.Dataset):
                 few_path = few_path.replace('.pkl', '_2k.pkl')
 
             if os.path.exists(few_path):
-                print_log(f"Loading preprocessed few-shot data from {few_path}", logger='ScanObjectNN')
+                print_log(f"Loading preprocessed few-shot data from {few_path}", logger='ScanObjectNN_fs')
                 with open(few_path, "rb") as file:
                     self.data_source = pickle.load(file)
             else:
-                print_log(f"Generating few-shot data to {few_path}", logger='ScanObjectNN')
+                print_log(f"Generating few-shot data to {few_path}", logger='ScanObjectNN_fs')
                 self.data_source = generate_fewshot_dataset(data, num_shots=num_shots)
                 with open(few_path, "wb") as file:
                     pickle.dump(self.data_source, file)
         else:
             self.data_source = data
-
-        self.subsample = config.subsample
-        if self.subsample != 'all':
-            print('\n============= Entering Base-to-Novel Generalization =============\n')
-            if self.subset != 'train': self.subsample = 'new'
-            self.data_source = subsample_classes_fs(self.data_source, self.subsample)
 
     def __len__(self):
         return len(self.data_source)

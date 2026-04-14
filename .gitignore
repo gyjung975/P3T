@@ -5,7 +5,9 @@ __pycache__/
 
 .idea
 environ.txt
+command.txt
 main_eval.py
+plot.py
 
 # C extensions
 # *.so  # notebook/render_balls.so

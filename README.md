@@ -13,7 +13,7 @@ This repository provides the official implementation of
 <img src="figs/prompter.jpg" alt= "" width="" height="400">
 </p>
 
-> With the rise of pre-trained models in the 3D point cloud domain for a wide range of real-world applications, adapting them to downstream tasks has become increasingly important. However, conventional full fine-tuning methods are computationally expensive and storage-intensive. Although prompt tuning has emerged as an efficient alternative, it often suffers from overfitting, thereby compromising generalization capability. To address this issue, we propose Prototypical Point-level Prompt Tuning (P$^3$T), a parameter-efficient prompt tuning method designed for pre-trained 3D vision-language models (VLMs). P$^3$T consists of two components: 1) \textit{Point Prompter}, which generates instance-aware point-level prompts for the input point cloud, and 2) \textit{Text Prompter}, which employs learnable prompts into the input text instead of hand-crafted ones. Since both prompters operate directly on input data, P$^3$T enables task-specific adaptation of 3D VLMs without sacrificing generalizability. Furthermore, to enhance embedding space alignment, which is key to fine-tuning 3D VLMs, we introduce a prototypical loss that reduces intra-category variance. Extensive experiments demonstrate that our method matches or outperforms full fine-tuning in classification and few-shot learning, and further exhibits robust generalization under data shift in the cross-dataset setting.
+> With the rise of pre-trained models in the 3D point cloud domain for a wide range of real-world applications, adapting them to downstream tasks has become increasingly important. However, conventional full fine-tuning methods are computationally expensive and storage-intensive. Although prompt tuning has emerged as an efficient alternative, it often suffers from overfitting, thereby compromising generalization capability. To address this issue, we propose Prototypical Point-level Prompt Tuning (P<sup>3</sup>T), a parameter-efficient prompt tuning method designed for pre-trained 3D vision-language models (VLMs). P<sup>3</sup>T consists of two components: 1) _Point Prompter_, which generates instance-aware point-level prompts for the input point cloud, and 2) _Text Prompter_, which employs learnable prompts into the input text instead of hand-crafted ones. Since both prompters operate directly on input data, P<sup>3</sup>T enables task-specific adaptation of 3D VLMs without sacrificing generalizability. Furthermore, to enhance embedding space alignment, which is key to fine-tuning 3D VLMs, we introduce a prototypical loss that reduces intra-category variance. Extensive experiments demonstrate that our method matches or outperforms full fine-tuning in classification and few-shot learning, and further exhibits robust generalization under data shift in the cross-dataset setting.
 
 ## Setup
 ```shell
@@ -31,7 +31,7 @@ pip install "git+https://github.com/erikwijmans/Pointnet2_PyTorch.git#egg=pointn
 pip install --upgrade https://github.com/unlimblue/KNN_CUDA/releases/download/0.2/KNN_CUDA-0.2-py3-none-any.whl
 ```
 ## Dataset
-* Download datasets under `data/`
+* Download datasets under `data/`.
 ```shell
 data
  |── modelnet40_normal_resampled
@@ -53,9 +53,24 @@ python prototype_gen.py --ulip2 --evaluate_3d --test_ckpt_addr data/pretrained_m
 ```
 
 ## Train
+For more details on the arguments, refer to `parser.py` and the corresponding run script.
+
+### Recognition
+- Train P<sup>3</sup>T on ModelNet40 for recognition.
 ```shell
 bash scripts/cls/mn40.sh 0
+```
+
+### Cross-dataset Generalization
+- Train P<sup>3</sup>T on Objaverser-LVIS for cross-dataset generalization.
+```shell
 bash scripts/cls/lvis.sh 2
+```
+
+### Few-shot Classification
+- Train P<sup>3</sup>T on ScanObjectNN for few-shot classification.
+```shell
+bash scripts/fewshot/sonn_objonly_fewshot.sh 0 16 7
 ```
 
 <!--

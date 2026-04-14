@@ -2,8 +2,8 @@ import os
 import argparse
 
 
-parser = argparse.ArgumentParser(description='PPPT', add_help=False)
-# Data
+parser = argparse.ArgumentParser(description='P3T', add_help=False)
+
 parser.add_argument('--output_dir', default='outputs', type=str, help='output dir')
 parser.add_argument('--dataset_name', default='scanobjectnn', type=str)
 parser.add_argument('--dataset_type', default='test', type=str, choices=['train', 'val', 'test'])
@@ -12,20 +12,19 @@ parser.add_argument('--dataset_prompt', default='modelnet40_64', type=str)
 parser.add_argument('--use_height', action='store_true', help='whether to use height informatio, by default enabled with PointNeXt.')
 parser.add_argument('--npoints', default=8192, type=int, help='number of points used for pre-train and test.')
 parser.add_argument('--nshots', default=16, type=int, help='number of shot for each category in train set.')
-# Prompt
+
 parser.add_argument('--template_init', default='', type=str)
 parser.add_argument('--num_learnable_prompt_tokens', default=32, type=int)
 parser.add_argument('--class_name_position', default='middle', type=str)
-# Model
+
 parser.add_argument('--model', default='ULIP_PointBERT', type=str)
 parser.add_argument('--test_ckpt_addr', default='', help='the ckpt to test 3d zero shot')
 parser.add_argument('--ulip2', action='store_true', help='use the pretrained model of ULIP2')
-# Training
+
 parser.add_argument('--epochs', default=250, type=int)
 parser.add_argument('--warmup_epochs', default=1, type=int)
 parser.add_argument('--start_epoch', default=0, type=int)
-parser.add_argument('--batch_size', default=64, type=int,
-                    help='number of samples per-device/per-gpu')
+parser.add_argument('--batch_size', default=64, type=int, help='number of samples per-device/per-gpu')
 parser.add_argument('--optim', default='adamw', type=str)
 parser.add_argument('--first_cycle_epochs', default=5, type=int, help='a parameter in cosine annealing warmup restart')
 parser.add_argument('--lr', default=3e-3, type=float, help='initial learning rate')
@@ -34,8 +33,7 @@ parser.add_argument('--min_lr', default=.0, type=float, help='min_lr in cosine a
 parser.add_argument('--gamma', default=0.5, type=float, help='gamma in cosine annealing warmup restart')
 parser.add_argument('--lr_start', default=1e-6, type=float, help='initial warmup lr')
 parser.add_argument('--lr_end', default=1e-5, type=float, help='minimum final lr')
-parser.add_argument('--update_freq', default=1, type=int,
-                    help='optimizer update frequency (i.e. gradient accumulation steps)')
+parser.add_argument('--update_freq', default=1, type=int)
 parser.add_argument('--wd', default=0.1, type=float)
 parser.add_argument('--betas', default=(0.9, 0.98), nargs=2, type=float)
 parser.add_argument('--eps', default=1e-8, type=float)

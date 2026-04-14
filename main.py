@@ -28,7 +28,7 @@ def main(args):
     utils.init_distributed_mode(args)
 
     if utils.is_main_process() and args.wandb:
-        wandb.init(project='P3T', name=args.exp_name.replace('sonn_', '').replace('-32v-middle', ''))
+        wandb.init(project='P3T', name=args.exp_name.replace('sonn_', ''))
         wandb.config.update(args)
 
     print(args)
