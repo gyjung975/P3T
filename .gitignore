@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+CLAUDE.md
 .idea
 0ori
 environ.txt
