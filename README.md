@@ -73,17 +73,15 @@ bash scripts/cls/lvis.sh 2
 bash scripts/fewshot/sonn_objonly_fewshot.sh 0 16 7
 ```
 
-<!--
 ## Citation
 ```bibtex
-@inproceedings{p3t,
-  title={P3T: Prototypical Point-level Prompt Tuning with Enhanced Generalization for 3D Vision-Language Models,
-  author={Geunyoung Jung, Soohong Kim, Kyungwoo Song, Jiyoung Jung},
-  booktitle={IEEE International Conference on Robotics and Automation (ICRA)},
+@INPROCEEDINGS{jung_p3t_26,
+  title={P$^3$T: Prototypical Point-level Prompt Tuning with Enhanced Generalization for 3D Vision-Language Models,
+  author={Jung, Geunyoung and Kim, Soohong and Song, Kyungwoo and Jung, Jiyoung},
+  booktitle={2026 IEEE International Conference on Robotics and Automation (ICRA)},
   year={2026}
 }
 ```
--->
 
 ## Acknowledgements
 Our codes are built upon [CoOp](https://github.com/KaiyangZhou/CoOp/), [ULIP](https://github.com/salesforce/ULIP), and [PPT](https://github.com/auniquesun/PPT). Thanks for their efforts.
